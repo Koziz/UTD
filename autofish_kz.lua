@@ -1,27 +1,3 @@
---[[
-    Auto Fishing + Fish Market / Boat Shop  -  WindUI edition
-    Place: [UPDATE] Alliance Tower Defense! (PlaceId 99703116573266)
-
-    Protokol diambil dari decompile FishingClient milik game:
-      FishingEvent  -> "Cast" {Position} | "LuckHold" {ClickTime} |
-                      "LuckRelease" {ClickTime} | "Hit" {Index} | "Miss" {Index} |
-                      "Cancel" {} | "EnteredZone" {}
-                   <-  "CastStarted" {Position, Luck{StartTime}} |
-                       "LuckHeld" {HoldStart, Speed} | "Target" {Index,Total,X,Y,StartTime} |
-                       "StageHit" {Stage,Total} | "LuckLocked" {Fill,Luck} | "Reset" | "Catch"
-      FishingFunction:InvokeServer -> "SellFish" {Fish, Amount} | "BuyOrEquipRod" {Rod} |
-                                    "BuyOrSpawnBoat" {Boat} | "SetAutoFish" {Enabled}
-
-    CATATAN PENTING
-    - FindFirstChild di client ini case-SENSITIVE, semua lookup pakai childNamed().
-    - Harga rod/fish ada di Main.Template.Price._TITLE. Label
-      Main.Template.BuyFrame.Move.Price.Amount ditimpa setButtonText() jadi
-      "BUY"/"EQUIP"/"SELL" dan TIDAK boleh diparse sebagai angka.
-    - Permukaan air di zona boss adalah y = 16, sedangkan marker SpawnSecretPoints
-      ada di y = 17. Teleport ke sana = masuk air = bisa mati/respawn.
-      Karena itu karakter DILETAHANG di atas air (hover), bukan di tempat.
---]]
-
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -138,10 +114,6 @@ local function setStatus(text, doNotify)
     end
 end
 
------------------------------------------
--- HELPER PENCARI NAMA
--- FindFirstChild di client ini case-sensitive, jadi selalu pakai ini.
------------------------------------------
 local function childNamed(node, name)
     local direct = node and node:FindFirstChild(name)
     if direct then
@@ -159,9 +131,6 @@ local function childNamed(node, name)
     return nil
 end
 
------------------------------------------
--- WINDUI
------------------------------------------
 local WindUI
 do
     local ok, result = pcall(function()
@@ -216,11 +185,6 @@ end
 
 Window:Tag({ Title = "ATD", Icon = "github", Color = Color3.fromHex("#1c1c1c"), Border = true })
 
------------------------------------------
--- DAFTAR ITEM MARKET (untuk dropdown)
--- Paksa game membangun baris shop lewat hook resmi FishingClient, lalu baca
--- nama rod / boat / resep dari baris yang dibuild itu.
------------------------------------------
 local ROD_NAMES = { "All" }
 local BOAT_NAMES = { "All" }
 local RECIPES = {}
